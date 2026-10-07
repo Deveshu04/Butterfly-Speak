@@ -66,8 +66,8 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sherpa-onnx = "1.13.3"
 cpal = "0.18"
-rubato = "0.16"
-rtrb = "0.3"
+rubato = "5.0"
+rtrb = "0.4"
 crossbeam-channel = "0.5"
 rdev = "0.5.3"
 arboard = "3"
@@ -84,8 +84,8 @@ futures-util = { version = "0.3", features = ["sink"] }
 # calls `spawn_blocking` directly to keep a ~500 MB upload read off a runtime
 # worker (the same runtime that carries `ws::run_session`'s single dispatcher).
 tokio = { version = "1", features = ["sync", "time", "macros", "net", "rt"] }
-tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
-base64 = "0.22"
+tokio-tungstenite = { version = "0.30", features = ["rustls-tls-webpki-roots"] }
+base64 = "0.23"
 # The 32 random bytes behind a PKCE verifier (`auth::pkce`). Already in the
 # graph under `uuid`'s v4 feature, so naming it adds no crate to the build —
 # but a verifier is the one secret that makes an intercepted authorization
@@ -102,9 +102,9 @@ bytes = "1"
 percent-encoding = "2"
 keyring = { version = "3", features = ["windows-native"] }
 tauri-plugin-opener = "2"
-sha2 = "0.10"
+sha2 = "0.11"
 tar = "0.4"
-bzip2 = "0.4"
+bzip2 = "0.5"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-appender = "0.2"
@@ -128,7 +128,7 @@ windows = { version = "0.62.2", features = [
 # reached through Tauri's own `PlatformWebview::controller()` — already a
 # transitive dependency of `wry`/`tauri`, pinned here at the exact version
 # they resolve to so no new version enters the graph.
-webview2-com = "0.38.2"
+webview2-com = "0.39.1"
 # Named directly (not just pulled in transitively via reqwest's rustls-tls
 # feature) so downloader.rs can match `rustls::Error`'s own discriminant
 # instead of sniffing message text. `default-features = false`
@@ -143,7 +143,7 @@ rustls = { version = "0.23", default-features = false }
 # honours the workspace's `-C target-feature=+crt-static` (.cargo/config.toml)
 # the same way the vendored sherpa-onnx/llama.cpp static libs do, so it links
 # cleanly against the rest of the /MT build.
-rusqlite = { version = "0.32", features = ["bundled"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
 # NFC normalization and combining-mark tests. Search (`notes::search`, which
 # builds the FTS5 query for both Notes and History) normalizes the query to NFC
 # before cutting it into terms, because matras and other combining marks only

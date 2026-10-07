@@ -5,6 +5,9 @@
 Voice dictation for Windows in English and 22 Indian languages: hold `Ctrl+Win`, speak,
 release, and the text is typed into the app that has focus.
 
+<p align="center"><a href="https://github.com/Deveshu04/Butterfly-Speak/releases/download/v0.2.0/butterfly-speak-launch.mp4"><img src="docs/media/demo.gif" width="720" alt="Hold Ctrl+Win, speak, release: the words appear in the focused app"></a></p>
+<p align="center"><a href="https://github.com/Deveshu04/Butterfly-Speak/releases/download/v0.2.0/butterfly-speak-launch.mp4">Watch the 43-second video</a></p>
+
 ## Install
 
 Download the installer from [Releases](https://github.com/Deveshu04/Butterfly-Speak/releases).

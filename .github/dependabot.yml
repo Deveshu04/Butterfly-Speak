@@ -1,35 +1,45 @@
 version: 2
+# Monthly, one grouped pull request per ecosystem. Major versions are left out:
+# they change APIs and are upgraded by hand together with the code that uses them.
 updates:
   - package-ecosystem: cargo
     directory: /src-tauri
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       cargo:
         patterns: ['*']
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       app-npm:
         patterns: ['*']
-    # The uninstall hook copies this CLI's installer template, and a bundle_config
-    # test in src-tauri/src/lib.rs fails until the hook is re-checked against a
-    # new one. Upgrade it by hand, so the rest of the npm group is not held back.
     ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+      # The uninstall hook copies this CLI's installer template, and a bundle_config
+      # test in src-tauri/src/lib.rs fails until the hook is re-checked against a
+      # new one. Upgrade it by hand, so the rest of the npm group is not held back.
       - dependency-name: '@tauri-apps/cli'
   - package-ecosystem: npm
     directory: /relay
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       relay-npm:
         patterns: ['*']
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       github-actions:
         patterns: ['*']

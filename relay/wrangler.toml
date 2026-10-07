@@ -1,0 +1,50 @@
+name = "butterflylabs-relay"
+main = "src/index.ts"
+# Pinned to the newest date the pinned test runtime (workerd in
+# @cloudflare/vitest-pool-workers) supports, so `npm test` and the deployed
+# Worker run the same semantics. Nothing here needs a later date.
+compatibility_date = "2026-08-22"
+compatibility_flags = ["nodejs_compat"]
+# Only the deployed version answers, at the workers.dev address. Per-version
+# preview URLs would keep every older upload callable after a fix ships.
+workers_dev = true
+preview_urls = false
+
+# Workers Logs off: the request URL carries Dictionary words as `prompt`; `wrangler tail` still gives live logs.
+[observability]
+enabled = false
+
+[[durable_objects.bindings]]
+name = "USER_SESSION"
+class_name = "UserSession"
+
+# One object per deleted address, named `carry:<hmac>`: the week it had used,
+# until the week ends (src/carry.ts).
+[[durable_objects.bindings]]
+name = "CARRY"
+class_name = "Carry"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UserSession"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Carry"]
+
+[vars]
+SUPABASE_URL = "https://iassqjnfvdffocyxptis.supabase.co"
+WEEKLY_WORD_LIMIT = "2000"
+# Chat calls a user may make in a week: far above honest use (about one per
+# dictation plus one per ~50 words), low enough that the route is no free LLM.
+WEEKLY_CHAT_LIMIT = "3000"
+# Audio a user may stream to Sarvam in a week, silence included: two hours.
+WEEKLY_AUDIO_SECONDS = "7200"
+# A realtime session ends after this long whatever it is doing (close 4030).
+SESSION_MAX_SECONDS = "1800"
+# A realtime session whose audio falls this far behind the clock is closed as
+# idle (close 1008). The app streams continuously while it records.
+SESSION_IDLE_SECONDS = "60"
+SARVAM_REALTIME_URL = "wss://api.sarvam.ai/speech-to-text-realtime/ws"
+SARVAM_CHAT_URL = "https://api.sarvam.ai/v1/chat/completions"
+# Secrets (never here): SARVAM_API_KEY, SUPABASE_SERVICE_ROLE_KEY, CARRY_KEY -- `wrangler secret put`.

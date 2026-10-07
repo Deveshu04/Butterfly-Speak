@@ -1,0 +1,204 @@
+[package]
+name = "butterfly-speak"
+version = "0.2.0"
+description = "Voice dictation for Windows with English and 22 Indian languages"
+authors = ["Butterfly Speak"]
+license = "AGPL-3.0-only"
+repository = "https://github.com/Deveshu04/Butterfly-Speak"
+edition = "2021"
+publish = false
+# The crate has two binaries, the app and the `fmtbench` benchmark runner, and
+# `tauri dev` starts the app with a bare `cargo run`, which is ambiguous
+# without this. No test target runs `cargo run`, so only `pnpm tauri dev`
+# shows the failure if this line goes missing.
+default-run = "butterfly-speak"
+
+[lib]
+name = "butterfly_speak_lib"
+# staticlib/cdylib are only needed for iOS/Android builds; desktop uses the
+# rlib. A staticlib alone is a 2.1 GB archive per profile.
+crate-type = ["rlib"]
+
+# The formatting benchmark runner: scores the deterministic rule pipeline (and,
+# with --live, a chat model) against tests/fixtures and writes a Markdown
+# report. `lib.rs` keeps its modules private, so fmtbench.rs compiles the
+# eval/format/cleanup sources directly via #[path] includes rather than
+# linking the rlib; see its module doc.
+[[bin]]
+name = "fmtbench"
+path = "src/bin/fmtbench.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[features]
+# `polish` compiles llama.cpp into every shipped build, so AI Polish works with
+# either provider: the cloud provider uses Sarvam chat completions, the
+# on-device provider runs a local Qwen model. Only the model *weights*
+# download (explicitly, from the Cleanup page); the engine always ships.
+# Needs LLVM + cmake to build.
+default = ["polish"]
+polish = ["dep:llama-cpp-2", "dep:encoding_rs"]
+
+[dependencies]
+llama-cpp-2 = { version = "0.1", optional = true }
+encoding_rs = { version = "0.8", optional = true }
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+# The `deep-link` feature is what makes a second launch carrying
+# `butterflylabs://auth/callback?code=...` reach the already-running app: the
+# plugin hands the secondary instance's argv to the deep-link plugin before it
+# calls the callback below (`Builder::callback`, single-instance 2.4.2). Without
+# it the browser's hand-back starts a second process that is killed silently and
+# the sign-in never completes.
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+# Sign-in comes back on the `butterflylabs://` scheme (see `auth`). The scheme
+# itself is declared in tauri.conf.json and registered by the NSIS installer;
+# `register_all()` covers a dev build, where there is no installer.
+tauri-plugin-deep-link = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-notification = "2"
+# File dialogs for exporting and importing settings (System section).
+tauri-plugin-dialog = "2"
+# Auto-update, driven from Rust only: the webview holds no updater permission.
+# See `updater`'s module doc for the policy it implements.
+tauri-plugin-updater = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sherpa-onnx = "1.13.3"
+cpal = "0.18"
+rubato = "0.16"
+rtrb = "0.3"
+crossbeam-channel = "0.5"
+rdev = "0.5.3"
+arboard = "3"
+anyhow = "1"
+regex = "1"
+sysinfo = "0.39"
+reqwest = { version = "0.12", default-features = false, features = ["stream", "rustls-tls", "json", "multipart"] }
+# "sink" and tokio's "net" are used directly by src/sarvam (SinkExt, split,
+# tokio::net::TcpStream) — declare them here instead of leaning on feature
+# unification from tokio-tungstenite/reqwest.
+futures-util = { version = "0.3", features = ["sink"] }
+# "rt" is declared rather than inherited from tauri's own tokio: this file's
+# own policy is not to lean on feature unification, and `sarvam::batch_job`
+# calls `spawn_blocking` directly to keep a ~500 MB upload read off a runtime
+# worker (the same runtime that carries `ws::run_session`'s single dispatcher).
+tokio = { version = "1", features = ["sync", "time", "macros", "net", "rt"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+base64 = "0.22"
+# The 32 random bytes behind a PKCE verifier (`auth::pkce`). Already in the
+# graph under `uuid`'s v4 feature, so naming it adds no crate to the build —
+# but a verifier is the one secret that makes an intercepted authorization
+# code useless, so where its randomness comes from is said out loud here
+# rather than borrowed from a transitive dependency's feature set.
+getrandom = "0.4"
+# Named directly rather than left transitive (the `rustls` precedent below), so
+# `sarvam::batch_job` can hold an upload body as a refcounted `Bytes`. The retry
+# closure has to be `Fn`, so it clones its body on every attempt — and a `Vec`
+# there would mean a second copy of a file that `media::probe` allows to reach
+# 500 MB. This adds no crate to the build: reqwest and tokio-tungstenite already
+# resolve the same version.
+bytes = "1"
+percent-encoding = "2"
+keyring = { version = "3", features = ["windows-native"] }
+tauri-plugin-opener = "2"
+sha2 = "0.10"
+tar = "0.4"
+bzip2 = "0.4"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+# Per-request end-marker minting (`format::backend::mint_end_marker`):
+# a UUID guessable from context would let a truncated reply happily echo back
+# a marker it never actually reached.
+uuid = { version = "1", features = ["v4"] }
+# Features after the first line go one per line, so two changes that each add
+# a feature do not conflict on the same line.
+windows = { version = "0.62.2", features = [
+    "Win32_Foundation", "Win32_UI_Input_KeyboardAndMouse", "Win32_System_DataExchange", "Win32_UI_WindowsAndMessaging", "Win32_System_Threading", "Win32_System_RemoteDesktop", "Win32_System_Registry", "Win32_System_Power", "Media_Control", "Foundation_Collections", "Win32_Graphics_Gdi", "Win32_UI_HiDpi",
+    # UI Automation reads (src/uia): IUIAutomation, ValuePattern, TextPattern.
+    "Win32_UI_Accessibility",
+    # ...and the COM apartment they live in. `Win32_UI_Accessibility` pulls in
+    # only `Win32_UI`, so CoInitializeEx/CoCreateInstance/CLSCTX/COINIT need
+    # naming here in their own right rather than being inherited from it or
+    # from webview2-com's feature unification.
+    "Win32_System_Com",
+] }
+# Typed access to the WebView2 COM APIs (`ICoreWebView2::add_ProcessFailed`),
+# reached through Tauri's own `PlatformWebview::controller()` — already a
+# transitive dependency of `wry`/`tauri`, pinned here at the exact version
+# they resolve to so no new version enters the graph.
+webview2-com = "0.38.2"
+# Named directly (not just pulled in transitively via reqwest's rustls-tls
+# feature) so downloader.rs can match `rustls::Error`'s own discriminant
+# instead of sniffing message text. `default-features = false`
+# deliberately: rustls's defaults pull in the `aws-lc-rs` crypto provider
+# (which needs NASM to build its C/assembly), but reqwest's `rustls-tls`
+# already resolves this same crate version on the lighter `ring` provider —
+# adding our own default features would union `aws-lc-rs` into the build
+# right alongside it.
+rustls = { version = "0.23", default-features = false }
+# History store (src/history). "bundled" compiles sqlite from source via the
+# `cc` crate rather than linking a system lib — required on Windows, and it
+# honours the workspace's `-C target-feature=+crt-static` (.cargo/config.toml)
+# the same way the vendored sherpa-onnx/llama.cpp static libs do, so it links
+# cleanly against the rest of the /MT build.
+rusqlite = { version = "0.32", features = ["bundled"] }
+# NFC normalization and combining-mark tests. Search (`notes::search`, which
+# builds the FTS5 query for both Notes and History) normalizes the query to NFC
+# before cutting it into terms, because matras and other combining marks only
+# compare equal across canonically equivalent spellings after that pass.
+# `canonical`, `learn` and `routes::wake` use the same functions.
+unicode-normalization = "0.1"
+# Container probing and decoding for file import (`media::probe`,
+# `media::decode`): how long a file is, whether it is audio at all, and what
+# its samples look like at 16 kHz mono. Pure Rust, so it links cleanly against
+# the /MT static-CRT build, and decoding in process means the installer does
+# not have to ship a separate decoder executable next to the app.
+#
+# `default-features = false` and an explicit list, because the default set is
+# every reader and every decoder the crate has, and most of them are weight
+# with no user here. What is enabled is the container readers for Sarvam's
+# documented format list intersected with what symphonia can demux:
+#   wav     -> RIFF/WAVE reader              (.wav)
+#   flac    -> native FLAC reader            (.flac)
+#   ogg     -> OGG reader                    (.ogg .oga .opus)
+#   mkv     -> Matroska reader               (.webm)
+#   isomp4  -> ISO base media reader         (.mp4 .m4a)
+#   mp3     -> MPEG elementary stream reader (.mp3)
+#   aac     -> ADTS elementary stream reader (.aac)
+# `flac`, `mp3` and `aac` are bundles that drag their decoder in with the
+# reader — that is the crate's packaging, not a choice available here.
+#
+# ...plus the decoders those readers need. Sarvam's batch endpoint reliably
+# transcribes only 16 kHz mono PCM WAV (the measurements are a table in
+# `media::decode`'s module doc), so every import is decoded and re-encoded in
+# process rather than uploaded as-is:
+#   pcm     -> the WAV/MP4 PCM codecs. Without it symphonia reads a `.wav`'s
+#              headers but cannot decode a single sample of it.
+#   vorbis  -> .ogg/.oga and Vorbis-in-WebM
+#   adpcm   -> the ADPCM variants a `.wav` may legally carry
+#   alac    -> Apple Lossless in .m4a, which QuickTime writes by default
+# There is deliberately no Opus decoder in this list because symphonia has
+# none. `.opus` and browser-recorded `.webm` therefore cannot be converted;
+# `media::decode::DecodeError::UnsupportedCodec` is where that is said out
+# loud rather than discovered as an empty note.
+#
+# `opt-simd` stays off. It is in the crate's default set, but it is a build
+# risk (target-feature detection on a /MT static build) for a speed-up on a
+# path that already runs off the async runtime on a blocking thread.
+#
+# Three formats Sarvam accepts are absent from
+# `media::probe::ACCEPTED_EXTENSIONS`, for two different reasons: AMR and WMA
+# have no symphonia reader at all, and AIFF has one (the `aiff` feature) but is
+# left off because nothing else in the app handles AIFF. See that constant.
+#
+# `id3v1`/`id3v2` earn their place separately: an ID3v2 tag sits in FRONT of
+# the MPEG sync word on nearly every real .mp3, and without the tag reader
+# registered the probe has to blindly scan past it (album art routinely runs to
+# hundreds of kB) instead of parsing its length. `ape` is left off: APE tags on
+# the formats above are vanishingly rare.
+symphonia = { version = "0.6", default-features = false, features = [
+    "wav", "flac", "ogg", "mkv", "isomp4", "mp3", "aac", "id3v1", "id3v2",
+    "pcm", "vorbis", "adpcm", "alac",
+] }

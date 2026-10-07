@@ -1,0 +1,73 @@
+{
+  "models": [
+    {
+      "id": "moonshine-tiny-en",
+      "displayName": "Moonshine Tiny",
+      "tier": "light",
+      "description": "Fastest and lightest. The right choice when RAM is tight or many apps are open.",
+      "engine": "moonshine",
+      "dirName": "sherpa-onnx-moonshine-tiny-en-int8",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-moonshine-tiny-en-int8.tar.bz2",
+      "sha256": "d5fe6ec4334fef36255b2a4010412cad4c007e33103fec62fb5d17cad88086f2",
+      "diskBytes": 107600000,
+      "estRamBytes": 220000000,
+      "werPct": 4.5,
+      "nativePunct": false
+    },
+    {
+      "id": "moonshine-base-en",
+      "displayName": "Moonshine Base",
+      "tier": "balanced",
+      "description": "The recommended default: strong accuracy, still light enough for 8 GB machines.",
+      "engine": "moonshine",
+      "dirName": "sherpa-onnx-moonshine-base-en-int8",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-moonshine-base-en-int8.tar.bz2",
+      "sha256": "21870cecaa2e44e4e2bf63e02d1072bed183ccd10284871353bd9d24dad14e5e",
+      "diskBytes": 250800000,
+      "estRamBytes": 400000000,
+      "werPct": 3.2,
+      "nativePunct": false
+    },
+    {
+      "id": "parakeet-110m-en",
+      "displayName": "NVIDIA Parakeet 110M",
+      "tier": "accurate",
+      "description": "NVIDIA's compact Parakeet with built-in punctuation. Excellent accuracy for its size.",
+      "engine": "nemoCtc",
+      "dirName": "sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000-int8",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000-int8.tar.bz2",
+      "sha256": "17f945007b52ccd8b7200ffc7c5652e9e8e961dfdf479cefcabd06cf5703630b",
+      "diskBytes": 104300000,
+      "estRamBytes": 450000000,
+      "werPct": 2.4,
+      "nativePunct": true
+    },
+    {
+      "id": "parakeet-0.6b-en",
+      "displayName": "NVIDIA Parakeet 0.6B",
+      "tier": "max",
+      "description": "Best-in-class accuracy. Heavy: recommended for 16 GB machines, or 8 GB with little else running.",
+      "engine": "nemoTransducer",
+      "dirName": "sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-int8.tar.bz2",
+      "sha256": "157c157bc51155e03e37d2466522a3a737dd9c72bb25f36eb18912964161e1ad",
+      "diskBytes": 482468385,
+      "estRamBytes": 1350000000,
+      "werPct": 1.7,
+      "nativePunct": true
+    }
+  ],
+  "punctuation": {
+    "dirName": "sherpa-onnx-online-punct-en-2024-08-06",
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/punctuation-models/sherpa-onnx-online-punct-en-2024-08-06.tar.bz2",
+    "sha256": "9f5e5a72c7d2829635bd074fce92b6bbd5b78da8a52e7ad8ed1be933f366b99d",
+    "diskBytes": 30600000
+  },
+  "aiPolish": {
+    "fileName": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/9217f5db79a29953eb74d5343926648285ec7e67/qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+    "diskBytes": 491400032,
+    "estRamBytes": 700000000
+  }
+}

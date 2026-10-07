@@ -1,0 +1,52 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 150
+    env:
+      CARGO_TERM_COLOR: always
+    # Every action, GitHub's own included, is pinned to the commit of a release
+    # tag: this job can write releases, and the last step holds the update
+    # signing key. Dependabot moves each pin to the next tagged release. Rust is
+    # installed with the runner's own rustup rather than an action, so no code
+    # outside these pins runs here.
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: 22, cache: pnpm }
+      - run: rustup toolchain install stable --profile minimal --no-self-update && rustup default stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with: { workspaces: src-tauri }
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~\AppData\Local\butterfly-speak\vendor
+          key: sherpa-${{ hashFiles('scripts/vendor-sherpa.ps1') }}
+      - run: powershell -ExecutionPolicy Bypass -File scripts\vendor-sherpa.ps1 -GithubEnv
+      - run: pnpm install --frozen-lockfile
+      # The release body becomes latest.json's `notes`, which the app shows as
+      # the update notes, so it comes from RELEASE_NOTES.md at the tagged
+      # commit. Its first line must be exactly "Butterfly Speak <version>".
+      - id: notes
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          [ "$(head -n 1 RELEASE_NOTES.md | tr -d '\r')" = "Butterfly Speak $version" ] || { echo "RELEASE_NOTES.md is not for $version"; exit 1; }
+          { echo 'body<<RELEASE_NOTES_EOF'; cat RELEASE_NOTES.md; echo; echo 'RELEASE_NOTES_EOF'; } >> "$GITHUB_OUTPUT"
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0.6.2
+        timeout-minutes: 120
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Butterfly Speak ${{ github.ref_name }}
+          releaseBody: ${{ steps.notes.outputs.body }}
+          releaseDraft: true
+          includeUpdaterJson: true

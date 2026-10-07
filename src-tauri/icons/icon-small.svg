@@ -1,0 +1,17 @@
+<!--
+  Butterfly Speak icon, small-size variant for 16-38 px:
+  no antennae, wider notch, thicker body, mark at ~79% of the tile, and the
+  lower-right lobe solid in the product accent (#F7A928) with no glyph.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" rx="228" fill="#141414" />
+  <g transform="translate(512 512) scale(34.58) translate(-12 -12)">
+    <g fill="#ededed">
+      <circle cx="4.5" cy="9" r="4.2" />
+      <circle cx="5.8" cy="16" r="3.2" />
+      <circle cx="19.5" cy="9" r="4.2" />
+      <rect x="10.5" y="7.4" width="3" height="10" rx="1.5" />
+    </g>
+    <circle cx="18.2" cy="16" r="3.2" fill="#F7A928" />
+  </g>
+</svg>

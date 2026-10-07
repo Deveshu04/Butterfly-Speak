@@ -1,0 +1,49 @@
+# Rust build output
+target/
+
+# Node / SvelteKit
+node_modules/
+dist/
+/build
+/.svelte-kit
+/package
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Tauri
+src-tauri/gen/
+
+# IDE
+.idea/
+.vscode/
+
+# Local model files are never committed
+*.onnx
+*.ort
+*.gguf
+*.tar.bz2
+
+# Logs
+*.log
+.claude/
+tools/__pycache__/
+
+# Raw downloads cached by tools/fetch_corpora.py -- multi-megabyte upstream
+# archives, never committed; only the sampled tests/fixtures/*.jsonl are.
+tools/.cache/
+
+# latency probe artefacts -- regenerate with tools/latency/make_fixtures.ps1;
+# only utt_short.wav (the gate fixture) is committed.
+tools/latency/utt_long.wav
+tools/latency/__pycache__/
+e2e_stress_*.json
+polish_probe_results.json
+# The Cloud-mode access token tools/latency/cloud_token.py writes for the
+# harness: one user's own hour-long Supabase bearer, written owner-only. Never
+# committed, and there is nothing in it worth keeping past the hour.
+.cloud_token
+
+# Cloudflare relay (relay/) -- no secret ever leaves the developer machine
+relay/node_modules/
+relay/.wrangler/
+relay/.dev.vars

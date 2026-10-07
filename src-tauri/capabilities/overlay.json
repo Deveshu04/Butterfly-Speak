@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "overlay",
+  "description": "The dictation pill. It may listen for events and stop listening, and nothing else: no app command, no window control, no opener. The capability_split tests in src/lib.rs fail if this file grants it anything more.",
+  "windows": ["overlay"],
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten"]
+}

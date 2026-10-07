@@ -1,0 +1,60 @@
+name: Bug report
+description: Something in Butterfly Speak does not work as it should.
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Shown on the app's Help & about page.
+      placeholder: 0.2.0
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      description: Settings → Speech engine.
+      options:
+        - Cloud
+        - Bring your own key
+        - On-device
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: The language you were dictating in, or "auto-detect".
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log excerpt
+      description: >-
+        The logs are in %LOCALAPPDATA%\ButterflySpeak\logs. Before pasting, remove anything
+        private, such as dictated text, names or your e-mail address.
+      render: text

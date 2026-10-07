@@ -1,0 +1,342 @@
+/* Butterfly Speak design tokens: warm off-white canvas, floating white
+   surface, soft hairlines, near-black primary actions, serif display accents,
+   amber keyboard chips.
+
+   Two themes. Light lives on bare `:root`; dark overrides the same names under
+   `:root.dark`, a class stamped on <html> by the pre-paint script in app.html
+   and kept current by src/lib/theme.svelte.ts. A class rather than a bare
+   `@media (prefers-color-scheme: dark)` because the preference is three-way —
+   an explicit "light" has to beat a dark OS, and a media query cannot lose.
+
+   Nothing in a component should name a colour. If a component needs one that
+   is not here, add it here first: a literal in a component's <style> block is
+   a light-only colour by construction, and that is exactly how a dark theme
+   rots. */
+
+:root {
+  color-scheme: light;
+
+  /* Canvas (window/sidebar) vs surface (floating content panel). */
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --bg-elevated: #faf9f7;
+  --fg: #21201d;
+  --fg-muted: #6d6b66;
+  --fg-faint: #a4a29c;
+  --hairline: #e8e6e1;
+  --hairline-strong: #d9d7d1;
+  /* Border a control takes on hover, one step past --hairline-strong. */
+  --hairline-hover: #c9c5bb;
+
+  --accent: #21201d;
+  --accent-fg: #ffffff;
+  /* The product's saffron, `#F7A928`. Not redefined in the dark block below:
+     it is the brand's colour rather than the interface's, and a mark that
+     changed hue with the theme would stop being the mark. Inside the app only
+     two places may use it: the lockup's lower-right lobe, and the listening
+     waveform via --pill-wave. */
+  --brand-saffron: #f7a928;
+  --teal: #1f6f61;
+  --teal-soft: #e4efec;
+  /* Text/icons drawn *on* a solid --teal / --danger fill. White in light;
+     dark in the dark theme, where those fills are light enough that white
+     would fail. */
+  --teal-fg: #ffffff;
+  --danger: #c03428;
+  --danger-soft: #fdedeb;
+  --danger-fg: #ffffff;
+  --caution: #8a6d00;
+  --caution-soft: #fbf3d9;
+  --caution-line: #eddca3;
+
+  /* Recessed well inside a surface (settings group panels, sample bubbles). */
+  --sunken: #f7f5f0;
+  /* The settings modal's left rail: one step below the content pane. */
+  --rail-bg: #fbfaf7;
+  /* Soft, low-emphasis control fill (the "Change…"-style buttons, key chips)
+     and the selected state of a nav row. In dark these become white washes,
+     not brighter opaque fills — see the note on the dark block below. */
+  --chip: #edeae2;
+  --chip-hover: #e5e1d7;
+  /* The chip that rides *on top of* a --chip track: the selected segment of a
+     segmented control. It has to be lighter than that track in both themes,
+     which --chip-hover is not — hover goes down in light and up in dark. */
+  --chip-raised: #ffffff;
+  --selected: #e7e4dd;
+  /* A warm informational notice (not a warning). */
+  --notice-bg: #f3ece0;
+  --notice-line: #e2d6c2;
+  /* Unfilled track behind a gauge/meter. */
+  --track: #e7e4dc;
+
+  /* Hover/press washes. Black over light; the dark block flips them to white,
+     which is the whole point: a black scrim over charcoal is invisible. */
+  --wash-soft: rgba(0, 0, 0, 0.025);
+  --wash: rgba(0, 0, 0, 0.05);
+  --wash-strong: rgba(0, 0, 0, 0.06);
+
+  /* Toggles. --switch-track is the hairline-bordered subtle switch
+     (components/Toggle.svelte); --switch-off is the solid settings-row knob. */
+  --switch-track: #f4f3f0;
+  --switch-off: #d8d4ca;
+  --switch-knob: #ffffff;
+
+  /* Activity heat ramp (Insights). lv4 is --teal. */
+  --heat-0: #e9e3d6;
+  --heat-1: #cfe4dc;
+  --heat-2: #93c6b6;
+  --heat-3: #4d9a86;
+
+  /* Amber hotkey chips (Ctrl / Win). */
+  --kbd-bg: #ffb64d;
+  --kbd-border: #f2a032;
+  --kbd-fg: #4a2d00;
+
+  /* Lavender promo/connect card. */
+  --promo-bg: #f4effb;
+  --promo-fg: #4c3a75;
+
+  /* Radius hierarchy: inputs feel like inputs, cards like cards, heroes
+     like heroes. */
+  --radius-hero: 22px;
+  --radius-panel: 20px;
+  --radius-card: 14px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+
+  /* Butterfly banner system: deep forest green + warm cream. Deliberately
+     theme-invariant: the banner is the brand hero and already reads as a dark
+     object on a light page, so it stays itself in both themes. */
+  --banner-bg-a: #052e29;
+  --banner-bg-b: #063b35;
+  --banner-bg-c: #0b4a40;
+  --banner-fg: #f5f0e6;
+  --banner-fg-muted: rgba(242, 236, 219, 0.8);
+  --banner-line: #f2ecdb;
+
+  --font-ui: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI",
+    system-ui, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-mono: "Cascadia Mono", Consolas, monospace;
+
+  --shadow-panel: 0 1px 2px rgba(30, 28, 24, 0.04), 0 8px 28px rgba(30, 28, 24, 0.05);
+  --shadow-pop: 0 4px 12px rgba(20, 18, 14, 0.08), 0 16px 48px rgba(20, 18, 14, 0.18);
+  --shadow-modal: 0 8px 24px rgba(20, 18, 14, 0.14), 0 24px 80px rgba(20, 18, 14, 0.22);
+  --shadow-drawer: -8px 0 24px rgba(20, 18, 14, 0.12);
+  --shadow-selected: 0 1px 2px rgba(31, 111, 97, 0.08);
+  --focus-ring: 0 0 0 3px rgba(31, 111, 97, 0.12);
+  --scrim: rgba(24, 22, 18, 0.32);
+
+  /* Dictation pill (routes/overlay). It floats over the user's desktop, not
+     over the app, so both themes keep it a dark capsule — what changes is how
+     hard it has to fight the wallpaper behind it. --pill-wave is read from JS
+     by the canvas (theme.svelte.ts `colorToken`), so whatever it resolves to
+     must be a form ctx.fillStyle parses everywhere: hex or rgba(), never
+     oklch(). Pointing it at --brand-saffron is safe for that — a custom
+     property's *computed* value has its var() references already substituted,
+     which is what getComputedStyle hands back, so the canvas still receives
+     the hex. It is the product's saffron: the listening waveform is one of
+     the two places in the app it may appear (see --brand-saffron); the
+     butterfly beside it stays monochrome. */
+  --pill-bg: rgba(22, 22, 22, 0.92);
+  --pill-border: rgba(255, 255, 255, 0.14);
+  --pill-fg: #ededed;
+  --pill-fg-soft: rgba(237, 237, 237, 0.7);
+  --pill-fg-dim: rgba(237, 237, 237, 0.45);
+  --pill-wave: var(--brand-saffron);
+  --pill-danger: #ff9d94;
+  --pill-danger-line: rgba(255, 115, 105, 0.7);
+
+  --motion: 150ms ease;
+  --titlebar-h: 48px;
+  --sidebar-w: 248px;
+}
+
+/* Dark theme: the names from :root, with dark values.
+
+   - Every neutral uses one warm hue, the hue of the light theme's off-white
+     canvas (91), at a low chroma, so switching themes reads as the same
+     product dimmed rather than a different one. The notice fill keeps the
+     light notice's own, warmer hue (81).
+   - Lightness rises from canvas (--bg) to surface (--surface) to elevated
+     (--bg-elevated), so a panel reads as nearer than the window behind it.
+   - Recessed wells (--sunken, --rail-bg) are opaque and darker than the
+     surface around them.
+   - Raised low-emphasis controls (chips, selected rows, tracks, switches) and
+     the hover washes are translucent warm white laid over whatever they sit
+     on, not opaque fills, so one value works on the canvas, the surface and
+     the rail alike.
+   - The primary action (--accent) turns into a light fill with dark text.
+
+   Values are oklch() and every one lies inside sRGB, so what the browser
+   paints is what is written here. src-tauri/src/theme.rs holds --bg's sRGB
+   conversion as the window fill; change them together. */
+
+:root.dark {
+  color-scheme: dark;
+
+  --bg: oklch(0.215 0.006 91);
+  --surface: oklch(0.245 0.006 91);
+  --bg-elevated: oklch(0.275 0.006 91);
+  --fg: oklch(0.94 0.006 91);
+  --fg-muted: oklch(0.75 0.008 91);
+  --fg-faint: oklch(0.6 0.008 91);
+  --hairline: oklch(0.32 0.006 91);
+  --hairline-strong: oklch(0.38 0.006 91);
+  --hairline-hover: oklch(0.46 0.007 91);
+
+  --accent: oklch(0.93 0.008 91);
+  --accent-fg: oklch(0.22 0.006 91);
+  --teal: oklch(0.74 0.09 172);
+  --teal-soft: oklch(0.3 0.03 172);
+  --teal-fg: oklch(0.22 0.02 172);
+  --danger: oklch(0.72 0.15 28);
+  --danger-soft: oklch(0.3 0.045 28);
+  --danger-fg: oklch(0.22 0.03 28);
+  --caution: oklch(0.82 0.12 92);
+  --caution-soft: oklch(0.3 0.04 92);
+  --caution-line: oklch(0.4 0.06 92);
+
+  --sunken: oklch(0.205 0.006 91);
+  --rail-bg: oklch(0.225 0.006 91);
+  --chip: oklch(0.97 0.004 91 / 0.075);
+  --chip-hover: oklch(0.97 0.004 91 / 0.12);
+  --chip-raised: oklch(0.97 0.004 91 / 0.17);
+  --selected: oklch(0.97 0.004 91 / 0.1);
+  --notice-bg: oklch(0.29 0.022 81);
+  --notice-line: oklch(0.38 0.03 81);
+  --track: oklch(0.97 0.004 91 / 0.09);
+
+  --wash-soft: oklch(0.97 0.004 91 / 0.03);
+  --wash: oklch(0.97 0.004 91 / 0.055);
+  --wash-strong: oklch(0.97 0.004 91 / 0.085);
+
+  --switch-track: oklch(0.97 0.004 91 / 0.06);
+  --switch-off: oklch(0.97 0.004 91 / 0.24);
+  --switch-knob: oklch(0.95 0.004 91);
+
+  --heat-0: oklch(0.29 0.008 91);
+  --heat-1: oklch(0.36 0.03 172);
+  --heat-2: oklch(0.48 0.06 172);
+  --heat-3: oklch(0.61 0.08 172);
+
+  /* Amber survives as the hotkey signature, just turned down so it stops
+     glowing against charcoal. Its text stays dark — the chip is a light
+     object in both themes. */
+  --kbd-bg: oklch(0.7 0.13 68);
+  --kbd-border: oklch(0.62 0.12 64);
+  --kbd-fg: oklch(0.24 0.05 68);
+
+  --promo-bg: oklch(0.28 0.028 300);
+  --promo-fg: oklch(0.84 0.06 300);
+
+  /* On charcoal a soft drop shadow does nothing; depth comes from a darker,
+     wider shadow plus a 1px top rim of white. */
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 28px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-pop: 0 4px 12px rgba(0, 0, 0, 0.35), 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 8px 24px rgba(0, 0, 0, 0.4), 0 24px 80px rgba(0, 0, 0, 0.55);
+  --shadow-drawer: -8px 0 24px rgba(0, 0, 0, 0.45);
+  /* A tinted fill on a card cannot survive dark mode on tint alone; on a
+     dark surface it needs a ring to read as selected. */
+  --shadow-selected: 0 0 0 1px oklch(0.74 0.09 172 / 0.28);
+  --focus-ring: 0 0 0 3px oklch(0.74 0.09 172 / 0.28);
+  --scrim: rgba(0, 0, 0, 0.6);
+
+  /* Lifted a little off pure black and given a brighter rim: on a dark
+     wallpaper the light theme's near-black capsule dissolves into the
+     desktop, and the rim is what re-draws its edge. */
+  --pill-bg: oklch(0.25 0.005 91 / 0.9);
+  --pill-border: rgba(255, 255, 255, 0.22);
+  --pill-fg: #f0eeea;
+  --pill-fg-soft: rgba(240, 238, 234, 0.72);
+  --pill-fg-dim: rgba(240, 238, 234, 0.5);
+  /* Restated rather than inherited so the pill's block stays readable as one
+     list; the value is the same saffron in both themes by design. */
+  --pill-wave: var(--brand-saffron);
+  /* C=0.115 rather than the 0.13 the rest of this ramp would suggest: 0.13 at
+     this lightness falls outside sRGB and the engine gamut-maps it, so the
+     colour that ships stops being the colour that is written down. */
+  --pill-danger: oklch(0.78 0.115 26);
+  --pill-danger-line: oklch(0.68 0.16 26 / 0.75);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  cursor: default;
+  overflow: hidden;
+}
+
+/* ---- Shared primitives used across pages ---- */
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px;
+}
+
+/* One-line muted description right under a page title. */
+.page-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  margin: -16px 0 24px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-faint);
+  margin: 0 0 12px;
+}
+
+kbd {
+  font-family: var(--font-ui);
+  font-size: 0.85em;
+  font-weight: 600;
+  border: 1px solid var(--kbd-border);
+  border-radius: 8px;
+  padding: 0.1em 0.55em;
+  background: var(--kbd-bg);
+  color: var(--kbd-fg);
+  white-space: nowrap;
+}
+
+/* ---- Reduced motion ----
+   Collapse durations rather than removing animations: an animation that still
+   runs, for 0.01ms, lands on its final keyframe, so anything animated freezes
+   in a *composed* state instead of snapping back to its unstyled one. The
+   indicators that carry meaning while they move (the pill's wings, its
+   waveform) get explicit resting poses next to their own rules — the rule
+   there is freeze in a state that still says what it said, never hide. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

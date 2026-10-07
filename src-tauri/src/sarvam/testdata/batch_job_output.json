@@ -1,0 +1,48 @@
+{
+  "_comment": [
+    "The SHAPE of a real Sarvam Batch STT output file, captured from a live job",
+    "(an 82 s 16 kHz mono WAV, language_code en-IN, model saaras:v3,",
+    "with_timestamps true) and checked in so sarvam::batch_job's parser",
+    "is written against what the server actually sends rather than what the docs",
+    "describe -- docs.sarvam.ai documents the download endpoint's WRAPPER (the",
+    "presigned URLs) but never the schema of the file behind them.",
+    "",
+    "Field names, types, nesting, units and array lengths are verbatim from that",
+    "run. The five timestamp values are the real ones. Only the TEXT is replaced,",
+    "with placeholders, so no transcript content enters the repository. Keys",
+    "beginning with an underscore are this note, not part of Sarvam's payload;",
+    "the parser ignores unknown keys, which is what lets them sit here.",
+    "",
+    "The three things this pins that no document states:",
+    "  1. `timestamps` is THREE PARALLEL ARRAYS, not an array of segment objects.",
+    "  2. The array of texts is named `words` but holds CHUNKS -- here five spans",
+    "     of 100-260 characters across 82 s. It is not word-level and never was.",
+    "  3. `start_time_seconds` / `end_time_seconds` are FLOAT SECONDS from the",
+    "     start of the file, and consecutive chunks abut exactly (end[i] ==",
+    "     start[i+1]).",
+    "",
+    "Also captured, from other live jobs:",
+    "  - `timestamps` is null (not an empty object) when with_timestamps is false.",
+    "  - `language_probability` is a float ONLY when language_code was `unknown`",
+    "    and the server auto-detected; it is null whenever a code was supplied.",
+    "  - `transcript` equals the chunk texts joined by a single space."
+  ],
+  "request_id": "20260906_00000000-0000-4000-8000-000000000000",
+  "transcript": "PLACEHOLDER CHUNK ONE. PLACEHOLDER CHUNK TWO. PLACEHOLDER CHUNK THREE. PLACEHOLDER CHUNK FOUR. PLACEHOLDER CHUNK FIVE.",
+  "timestamps": {
+    "words": [
+      "PLACEHOLDER CHUNK ONE.",
+      "PLACEHOLDER CHUNK TWO.",
+      "PLACEHOLDER CHUNK THREE.",
+      "PLACEHOLDER CHUNK FOUR.",
+      "PLACEHOLDER CHUNK FIVE."
+    ],
+    "start_time_seconds": [0.13, 20.39, 36.39, 57.09, 73.09],
+    "end_time_seconds": [20.39, 36.39, 57.09, 73.09, 80.48]
+  },
+  "diarized_transcript": null,
+  "language_code": "en-IN",
+  "language_probability": null,
+  "audio_hash": "00000000000000000000000000000000",
+  "audio_mime": "audio/wav"
+}

@@ -1,0 +1,14 @@
+[target.x86_64-pc-windows-msvc]
+# The prebuilt sherpa-onnx libraries are /MT, so everything links the static
+# CRT (mixing /MT and /MD fails with LNK2038). The installed app therefore needs
+# no Visual C++ redistributable.
+# x86-64-v3 (AVX2, FMA): llama.cpp builds its SIMD paths from these target
+# features; without it local polish runs about five times slower.
+rustflags = ["-C", "target-feature=+crt-static", "-C", "target-cpu=x86-64-v3"]
+
+[env]
+# llama.cpp has to use the static CRT as well; its build script only reads
+# these variables.
+LLAMA_STATIC_CRT = "1"
+CMAKE_MSVC_RUNTIME_LIBRARY = "MultiThreaded"
+CMAKE_POLICY_DEFAULT_CMP0091 = "NEW"

@@ -1,0 +1,38 @@
+{
+  "name": "butterfly-speak",
+  "version": "0.2.0",
+  "description": "Free dictation for Windows in English and 22 Indian languages, powered by Sarvam AI, with an on-device mode.",
+  "type": "module",
+  "packageManager": "pnpm@10.29.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "node tools/notes-migration/build.mjs && node --test \"tests/web/*.test.mjs\" tools/notes-migration/run-migration-checks.mjs",
+    "tauri": "tauri"
+  },
+  "license": "AGPL-3.0-only",
+  "repository": "github:Deveshu04/Butterfly-Speak",
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.6",
+    "@sveltejs/kit": "^2.9.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@tauri-apps/cli": "^2",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3"
+  }
+}

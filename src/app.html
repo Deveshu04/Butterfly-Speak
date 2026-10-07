@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Butterfly Speak</title>
+    <!-- Theme, stamped before first paint.
+
+         This has to be inline, synchronous, and in <head>: the app bundle
+         resolves the theme too, but it only runs once the window is already on
+         screen, and a dark-theme user would watch the window flash cream-white
+         on every launch.
+
+         Duplicated from src/lib/theme.svelte.ts on purpose — it cannot import
+         anything and still be synchronous. The two must agree on the
+         localStorage key, the validation, and what "auto" resolves to; that
+         module is the one to change first.
+
+         color-scheme is set as well as the class, because it is what the
+         engine paints the default canvas with before any stylesheet has
+         loaded. Without it the first frame is white even here. -->
+    <script>
+      (function () {
+        try {
+          var pref = localStorage.getItem("theme");
+          if (pref !== "light" && pref !== "dark" && pref !== "auto") pref = "auto";
+          var dark =
+            pref === "dark" ||
+            (pref === "auto" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var root = document.documentElement;
+          if (dark) root.classList.add("dark");
+          root.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {
+          /* Private mode, disabled storage: fall through to the light default
+             rather than failing the document. */
+        }
+      })();
+    </script>
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+/* Shared vocabulary for the Settings modal sections: serif section title,
+   group headings, soft panels of rows with the control on the right. */
+
+.s-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  margin: 0 0 26px;
+}
+
+.s-group {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 28px 0 12px;
+}
+
+.s-group:first-of-type {
+  margin-top: 0;
+}
+
+.s-panel {
+  background: var(--sunken);
+  border-radius: var(--radius-card);
+  padding: 2px 26px;
+  margin-bottom: 8px;
+}
+
+.s-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 22px 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.s-row:first-child {
+  border-top: none;
+}
+
+.s-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.s-row-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.s-row-sub {
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  margin: 3px 0 0;
+  line-height: 1.5;
+}
+
+.s-row-sub kbd {
+  font-size: 12px;
+}
+
+.s-value {
+  font-size: 13.5px;
+  color: var(--fg-muted);
+}
+
+/* Soft "Change"-style button. */
+.s-btn {
+  flex: none;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  border: 1px solid var(--hairline);
+  background: var(--chip);
+  color: var(--fg);
+  border-radius: 10px;
+  padding: 9px 22px;
+  cursor: pointer;
+  transition: background var(--motion);
+}
+
+.s-btn:hover {
+  background: var(--chip-hover);
+}
+
+.s-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.s-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.s-select,
+.s-input {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  padding: 9px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--fg);
+  max-width: 260px;
+}
+
+.s-error {
+  font-size: 13px;
+  color: var(--danger);
+  margin: 6px 0 0;
+}
+
+.s-note {
+  font-size: 12.5px;
+  color: var(--fg-faint);
+  margin: 10px 2px 0;
+  line-height: 1.5;
+}

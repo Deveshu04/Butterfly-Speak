@@ -1,0 +1,28 @@
+<!--
+  Butterfly Speak icon: the butterfly silhouette on a dark rounded tile, with
+  the lower-right lobe in the product accent (#F7A928) carrying a listening
+  waveform cut in the tile colour. The mark spans 70% of the tile width and is
+  centred on its bounds including the antennae (12, 11.5). This full mark is
+  used for 48 px and up.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" rx="228" fill="#141414" />
+  <g transform="translate(512 512) scale(37.3333) translate(-12 -11.5)">
+    <g fill="#ededed">
+      <circle cx="7.2" cy="9" r="4.8" />
+      <circle cx="8.2" cy="16" r="3.6" />
+      <circle cx="16.8" cy="9" r="4.8" />
+      <rect x="11.15" y="7.4" width="1.7" height="10" rx="0.85" />
+    </g>
+    <g fill="none" stroke="#ededed" stroke-width="1" stroke-linecap="round">
+      <path d="M11.7 7.6 C11.1 5.8 10 4.6 8.8 3.9" />
+      <path d="M12.3 7.6 C12.9 5.8 14 4.6 15.2 3.9" />
+    </g>
+    <circle cx="15.8" cy="16" r="3.6" fill="#F7A928" />
+    <g transform="translate(15.8 16)">
+      <rect x="-1.6" y="-0.9" width="0.78" height="1.8" rx="0.39" fill="#141414" />
+      <rect x="-0.39" y="-1.75" width="0.78" height="3.5" rx="0.39" fill="#141414" />
+      <rect x="0.82" y="-1.2" width="0.78" height="2.4" rx="0.39" fill="#141414" />
+    </g>
+  </g>
+</svg>

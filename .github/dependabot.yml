@@ -1,0 +1,35 @@
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /src-tauri
+    schedule:
+      interval: weekly
+    groups:
+      cargo:
+        patterns: ['*']
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      app-npm:
+        patterns: ['*']
+    # The uninstall hook copies this CLI's installer template, and a bundle_config
+    # test in src-tauri/src/lib.rs fails until the hook is re-checked against a
+    # new one. Upgrade it by hand, so the rest of the npm group is not held back.
+    ignore:
+      - dependency-name: '@tauri-apps/cli'
+  - package-ecosystem: npm
+    directory: /relay
+    schedule:
+      interval: weekly
+    groups:
+      relay-npm:
+        patterns: ['*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ['*']

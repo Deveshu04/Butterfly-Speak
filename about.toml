@@ -1,0 +1,18 @@
+# Settings for cargo-about, which writes THIRD_PARTY_LICENSES.html:
+#   cargo about generate -m src-tauri/Cargo.toml -c about.toml about.hbs -o THIRD_PARTY_LICENSES.html
+# The app ships for 64-bit Windows only, so only that target's crates are listed.
+targets = ["x86_64-pc-windows-msvc"]
+ignore-dev-dependencies = true
+# Butterfly Speak itself (publish = false) is not a third-party crate.
+private = { ignore = true }
+accepted = [
+    "Apache-2.0",
+    "MIT",
+    "BSD-3-Clause",
+    "BSL-1.0",
+    "CDLA-Permissive-2.0",
+    "ISC",
+    "MPL-2.0",
+    "Unicode-3.0",
+    "Zlib",
+]
